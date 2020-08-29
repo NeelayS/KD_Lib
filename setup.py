@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 """The setup script."""
 
+import codecs
+import os
 from setuptools import setup, find_packages
 
 with open("README.rst") as readme_file:
@@ -11,7 +14,27 @@ with open("README.rst") as readme_file:
 with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-requirements = []
+PROJECT = os.path.abspath(os.path.dirname(__file__))
+REQUIRE_PATH = "requirements.txt"
+
+# helper functions
+def read(*parts):
+    """
+    returns contents of file
+    """
+    with codecs.open(os.path.join(PROJECT, *parts), "rb", "utf-8") as file:
+        return file.read()
+
+
+def get_requires(path=REQUIRE_PATH):
+    """
+    generates requirements from file path given as REQUIRE_PATH
+    """
+    for line in read(path).splitlines():
+        line = line.strip()
+        if line and not line.startswith("#"):
+            yield line
+
 
 setup_requirements = ["pytest-runner"]
 
@@ -29,7 +52,7 @@ setup(
         "Programming Language :: Python :: 3.7",
     ],
     description="A Pytorch Library to help extend all Knowledge Distillation works",
-    install_requires=requirements,
+    install_requires=list(get_requires()),
     license="MIT license",
     long_description=readme + "\n\n" + history,
     include_package_data=True,
